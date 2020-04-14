@@ -2,7 +2,9 @@
   "name": "requestanimationframe-wrapper-debugger",
   "version": "0.1.0",
   "description": "A small JS library that wraps requestanimationframe to provide simple and advanced looping and debugging functionality.",
-  "main": "index.js",
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.esm.js",
+  "sideEffects": false,
   "scripts": {
     "lint": "eslint $PWD/'**/*.js'",
     "lint:fix": "prettier-eslint $PWD/'**/*.js' --write",
@@ -27,6 +29,8 @@
   },
   "homepage": "https://github.com/dvanderweele/requestanimationframe-wrapper-debugger#readme",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
@@ -39,7 +43,9 @@
     "prettier-eslint-cli": "^5.0.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.6.1",
-    "rollup-plugin-node-resolve": "^5.2.0"
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.3.0"
   },
   "husky": {
     "hooks": {
