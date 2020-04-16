@@ -111,3 +111,29 @@ test('expect dispatch to cause appropriate state changes', () => {
   looperStateMachine[symbols[3]]('stop')
   expect(looperStateMachine[symbols[0]]).toBe('STOPPED')
 })
+
+test('callbacks passed to actions via dispatch run when passed', () => {
+  let res = null
+  looperStateMachine[symbols[2]]('CREATED')
+  looperStateMachine[symbols[3]]('start', () => {
+    res = 'dayo'
+  })
+  expect(res).toBe('dayo')
+  looperStateMachine[symbols[3]]('pause', () => {
+    res = 'daayo'
+  })
+  expect(res).toBe('daayo')
+  looperStateMachine[symbols[3]]('unpause', () => {
+    res = 'daaayo'
+  })
+  expect(res).toBe('daaayo')
+  looperStateMachine[symbols[3]]('stop', () => {
+    res = 'daaaayo'
+  })
+  expect(res).toBe('daaaayo')
+  looperStateMachine[symbols[2]]('PAUSED')
+  looperStateMachine[symbols[3]]('stop', () => {
+    res = 'daaaaayo'
+  })
+  expect(res).toBe('daaaaayo')
+})

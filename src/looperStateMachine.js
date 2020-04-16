@@ -7,23 +7,28 @@ const looperStateMachine = {
   [state]: 'CREATED',
   [transitions]: {
     CREATED: {
-      start: function () {
+      start: function (callback) {
+        callback()
         looperStateMachine[setState]('RUNNING')
       }
     },
     RUNNING: {
-      pause: function () {
+      pause: function (callback) {
+        callback()
         looperStateMachine[setState]('PAUSED')
       },
-      stop: function () {
+      stop: function (callback) {
+        callback()
         looperStateMachine[setState]('STOPPED')
       }
     },
     PAUSED: {
-      unpause: function () {
+      unpause: function (callback) {
+        callback()
         looperStateMachine[setState]('RUNNING')
       },
-      stop: function () {
+      stop: function (callback) {
+        callback()
         looperStateMachine[setState]('STOPPED')
       }
     },
@@ -43,11 +48,11 @@ const looperStateMachine = {
       )
     }
   },
-  [dispatch]: (actionName, ...payload) => {
+  [dispatch]: (actionName, payload = () => {}) => {
     const action =
       looperStateMachine[transitions][looperStateMachine[state]][actionName]
     if (action) {
-      action.apply(looperStateMachine, ...payload)
+      action.call(looperStateMachine, payload)
     } else {
       throw new Error(
         `Action "${actionName}" is not a valid action within the "${looperStateMachine[state]}" state of the looperStateMachine.`
