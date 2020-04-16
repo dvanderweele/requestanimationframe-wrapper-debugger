@@ -8,23 +8,23 @@ const looperStateMachine = {
   [transitions]: {
     CREATED: {
       start: function () {
-        this.setState('RUNNING')
+        looperStateMachine[setState]('RUNNING')
       }
     },
     RUNNING: {
       pause: function () {
-        this.setState('PAUSED')
+        looperStateMachine[setState]('PAUSED')
       },
       stop: function () {
-        this.setState('STOPPED')
+        looperStateMachine[setState]('STOPPED')
       }
     },
     PAUSED: {
       unpause: function () {
-        this.setState('RUNNING')
+        looperStateMachine[setState]('RUNNING')
       },
       stop: function () {
-        this.setState('STOPPED')
+        looperStateMachine[setState]('STOPPED')
       }
     },
     STOPPED: {}
@@ -44,12 +44,13 @@ const looperStateMachine = {
     }
   },
   [dispatch]: (actionName, ...payload) => {
-    const action = this.transitions[this.state][actionName]
+    const action =
+      looperStateMachine[transitions][looperStateMachine[state]][actionName]
     if (action) {
       action.apply(looperStateMachine, ...payload)
     } else {
       throw new Error(
-        `Action "${actionName}" is not a valid action within the "${this.state}" state of the looperStateMachine.`
+        `Action "${actionName}" is not a valid action within the "${looperStateMachine[state]}" state of the looperStateMachine.`
       )
     }
   }
