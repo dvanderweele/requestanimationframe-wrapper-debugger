@@ -1,4 +1,4 @@
-const startFactory = (config, looper) => {
+const unpauseFactory = (config, looper) => {
   /*
     SYMBOLS LEGEND for looper object
 
@@ -20,11 +20,11 @@ const startFactory = (config, looper) => {
     // user defined limit
     if (config.position === 'first') {
       func = () => {
-        this[syms[2]] = 0
+        let lastUnpaused = false
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
+          if (!lastUnpaused) {
+            this[syms[3]] = timestamp
+            lastUnpaused = true
           }
           this[syms[4]] = timestamp - this[syms[3]]
           if (this[syms[2]] + this[syms[4]] < config.limit) {
@@ -35,7 +35,7 @@ const startFactory = (config, looper) => {
           config.loopFunction()
         }
         this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
+          'unpause',
           callback
         )
       }
@@ -43,10 +43,11 @@ const startFactory = (config, looper) => {
       func = () => {
         this[syms[2]] = 0
         this[syms[3]] = this[syms[1]]
+        let lastUnpaused = false
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
+          if (!lastUnpaused) {
+            this[syms[3]] = timestamp
+            lastUnpaused = true
           }
           this[syms[4]] = timestamp - this[syms[3]]
           config.loopFunction()
@@ -57,7 +58,7 @@ const startFactory = (config, looper) => {
           }
         }
         this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
+          'unpause',
           callback
         )
       }
@@ -68,17 +69,18 @@ const startFactory = (config, looper) => {
       func = () => {
         this[syms[2]] = 0
         this[syms[3]] = this[syms[1]]
+        let lastUnpaused = false
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
+          if (!lastUnpaused) {
+            this[syms[3]] = timestamp
+            lastUnpaused = true
           }
           this[syms[4]] = timestamp - this[syms[3]]
           this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
           config.loopFunction()
         }
         this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
+          'unpause',
           callback
         )
       }
@@ -86,17 +88,18 @@ const startFactory = (config, looper) => {
       func = () => {
         this[syms[2]] = 0
         this[syms[3]] = this[syms[1]]
+        let lastUnpaused = false
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
+          if (!lastUnpaused) {
+            this[syms[3]] = timestamp
+            lastUnpaused = true
           }
           this[syms[4]] = timestamp - this[syms[3]]
           config.loopFunction()
           this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
         }
         this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
+          'unpause',
           callback
         )
       }
@@ -106,4 +109,4 @@ const startFactory = (config, looper) => {
   return func
 }
 
-export default startFactory
+export default unpauseFactory

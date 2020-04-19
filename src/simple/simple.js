@@ -1,6 +1,7 @@
 import looperStateMachine from '../looperStateMachine'
 import startFactory from './startFactory'
 import pauseFactory from './pauseFactory'
+import unpauseFactory from './unpauseFactory'
 
 const simple = config => {
   // validate config object
@@ -76,6 +77,7 @@ const simple = config => {
   looper[loop] = null
   looper.start = startFactory(config, looper)
   looper.pause = pauseFactory(looper)
+  looper.unpause = unpauseFactory(config, looper)
   return looper
 }
 
