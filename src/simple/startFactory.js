@@ -22,8 +22,11 @@ const startFactory = (config, looper) => {
       func = () => {
         this[syms[2]] = 0
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) this[syms[1]] = timestamp
-          this[syms[4]] = timestamp - this[syms[1]]
+          if (!this[syms[1]]) {
+            this[syms[1]] = timestamp
+            this[syms[3]] = this[syms[1]]
+          }
+          this[syms[4]] = timestamp - this[syms[3]]
           if (this[syms[2]] + this[syms[4]] < config.limit) {
             this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
           }
@@ -37,9 +40,13 @@ const startFactory = (config, looper) => {
     } else {
       func = () => {
         this[syms[2]] = 0
+        this[syms[3]] = this[syms[1]]
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) this[syms[1]] = timestamp
-          this[syms[4]] = timestamp - this[syms[1]]
+          if (!this[syms[1]]) {
+            this[syms[1]] = timestamp
+            this[syms[3]] = this[syms[1]]
+          }
+          this[syms[4]] = timestamp - this[syms[3]]
           config.loopFunction()
           if (this[syms[2]] + this[syms[4]] < config.limit) {
             this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
@@ -56,9 +63,13 @@ const startFactory = (config, looper) => {
     if (config.position === 'first') {
       func = () => {
         this[syms[2]] = 0
+        this[syms[3]] = this[syms[1]]
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) this[syms[1]] = timestamp
-          this[syms[4]] = timestamp - this[syms[1]]
+          if (!this[syms[1]]) {
+            this[syms[1]] = timestamp
+            this[syms[3]] = this[syms[1]]
+          }
+          this[syms[4]] = timestamp - this[syms[3]]
           this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
           config.loopFunction()
         }
@@ -70,9 +81,13 @@ const startFactory = (config, looper) => {
     } else {
       func = () => {
         this[syms[2]] = 0
+        this[syms[3]] = this[syms[1]]
         this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) this[syms[1]] = timestamp
-          this[syms[4]] = timestamp - this[syms[1]]
+          if (!this[syms[1]]) {
+            this[syms[1]] = timestamp
+            this[syms[3]] = this[syms[1]]
+          }
+          this[syms[4]] = timestamp - this[syms[3]]
           config.loopFunction()
           this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
         }
