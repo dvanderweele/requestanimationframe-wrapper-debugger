@@ -1,4 +1,5 @@
-import looperStateMachine from './looperStateMachine'
+import looperStateMachine from '../looperStateMachine'
+import startFactory from './startFactory'
 
 const simple = config => {
   // validate config object
@@ -47,6 +48,32 @@ const simple = config => {
   // config looper object to return
   const looper = {}
   looper.prototype = looperStateMachine
+  /*
+    Metadata Symbols
+
+    - rAF ID - will get refreshed when paused and unpaused
+    - startTime - original starting timestamp, never refreshed
+    - timeSum - sum of all progresses calculated on every pause
+    - lastUnpause - timestamp from loop at last unpause
+    - progress - time between start or lastUnpause and current frame
+    - deltaTime - new each frame
+    - loop - outer function called each rAF frame, recreated on unpause
+  */
+  const rAFID = Symbol('rAFID')
+  const startTime = Symbol('startTime')
+  const timeSum = Symbol('timeSum')
+  const lastUnpause = Symbol('lastUnpause')
+  const progress = Symbol('progress')
+  const deltaTime = Symbol('deltaTime')
+  const loop = Symbol('loop')
+  looper[rAFID] = null
+  looper[startTime] = null
+  looper[timeSum] = null
+  looper[lastUnpause] = null
+  looper[progress] = null
+  looper[deltaTime] = null
+  looper[loop] = null
+  looper.start = startFactory(config, looper)
   return looper
 }
 

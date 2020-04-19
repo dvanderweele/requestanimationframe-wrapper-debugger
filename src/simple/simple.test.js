@@ -58,3 +58,18 @@ test('expect "simple" to throw errors on invalid inputs', () => {
     })
   }).not.toThrow()
 })
+
+test('returned looper object has 7 null Symbol properties', () => {
+  const looper = simple({
+    loopFunction: () => {},
+    position: 'first'
+  })
+  expect(Object.getOwnPropertySymbols(looper).length).toBe(7)
+  expect(looper[Object.getOwnPropertySymbols(looper)[0]]).toBe(null)
+  expect(looper[Object.getOwnPropertySymbols(looper)[1]]).toBe(null)
+  expect(looper[Object.getOwnPropertySymbols(looper)[2]]).toBe(null)
+  expect(looper[Object.getOwnPropertySymbols(looper)[3]]).toBe(null)
+  expect(looper[Object.getOwnPropertySymbols(looper)[4]]).toBe(null)
+  expect(looper[Object.getOwnPropertySymbols(looper)[5]]).toBe(null)
+  expect(looper[Object.getOwnPropertySymbols(looper)[6]]).toBe(null)
+})
