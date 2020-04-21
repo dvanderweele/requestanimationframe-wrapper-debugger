@@ -20,6 +20,12 @@ test('expect "simple" to throw errors on invalid inputs', () => {
   }).toThrow(Error)
   expect(() => {
     simple({
+      loopFunction: () => {},
+      scaleDelta: false
+    })
+  }).toThrow(TypeError)
+  expect(() => {
+    simple({
       loopFunction: 'fubar'
     })
   }).toThrow(TypeError)
@@ -32,7 +38,15 @@ test('expect "simple" to throw errors on invalid inputs', () => {
   expect(() => {
     simple({
       loopFunction: () => {},
-      limit: 2000
+      limit: 2000,
+      scaleDelta: 1000
+    })
+  }).not.toThrow()
+  expect(() => {
+    simple({
+      loopFunction: () => {},
+      limit: 2000,
+      scaleDelta: () => {}
     })
   }).not.toThrow()
 })

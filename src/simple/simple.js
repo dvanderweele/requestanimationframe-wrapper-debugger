@@ -31,6 +31,15 @@ const simple = config => {
       `If you include a "limit" key in the config object you pass to function "simple", its value must be a number (i.e. the max number of milliseconds you want your "loopFunction" to run for). You provided a ${typeof config.limit} instead.`
     )
   }
+  if (
+    configKeys.indexOf('scaleDelta') !== -1 &&
+    typeof config.scaleDelta !== 'number' &&
+    typeof config.scaleDelta !== 'function'
+  ) {
+    throw TypeError(
+      `Your "scaleDelta" config value is of type "${typeof config.scaleDelta}". If you include a "scaleDelta" key in the config object you pass to function "simple", its value must either be a number (i.e. the number you wish the deltaTime to be divided by before it is passed to your "loopFunction" each frame) or a custom callback function to transform the deltaTime each frame before it is passed to your "loopFunction".`
+    )
+  }
   // config looper object to return
   const looper = {}
   looper.prototype = looperStateMachine
