@@ -3,8 +3,7 @@ import startFactory from './startFactory'
 test('expect startFactory to output function bound to looper', () => {
   const fn = startFactory(
     {
-      loopFunction: () => {},
-      position: 'last'
+      loopFunction: () => {}
     },
     {
       [Symbol(0)]: null,

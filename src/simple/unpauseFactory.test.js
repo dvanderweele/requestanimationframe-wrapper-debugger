@@ -3,8 +3,7 @@ import unpauseFactory from './unpauseFactory'
 test('expect unpauseFactory to output function bound to looper', () => {
   const fn = unpauseFactory(
     {
-      loopFunction: () => {},
-      position: 'last'
+      loopFunction: () => {}
     },
     {
       [Symbol(0)]: null,

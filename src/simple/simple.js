@@ -31,30 +31,13 @@ const simple = config => {
       `If you include a "limit" key in the config object you pass to function "simple", its value must be a number (i.e. the max number of milliseconds you want your "loopFunction" to run for). You provided a ${typeof config.limit} instead.`
     )
   }
-  if (config.position && typeof config.position !== 'string') {
-    throw TypeError(
-      'If your config object for function "simple" includes a "position" key, it must be of type string.'
-    )
-  }
-  if (
-    config.position &&
-    config.position !== 'first' &&
-    config.position !== 'last'
-  ) {
-    throw Error(
-      `If your config object for function "simple" includes a "position" key, its string value must be either "first" or "last". You passed "${config.position}".`
-    )
-  }
-  if (configKeys.indexOf('position') === -1) {
-    config.position = 'first'
-  }
   // config looper object to return
   const looper = {}
   looper.prototype = looperStateMachine
   /*
-    Metadata Symbols
+    Looper Metadata
 
-    - rAF ID - will get refreshed when paused and unpaused
+    - rAFID - will get refreshed when paused and unpaused
     - startTime - original starting timestamp, never refreshed
     - timeSum - sum of all progresses calculated on every pause
     - lastUnpause - timestamp from loop at last unpause
@@ -62,20 +45,13 @@ const simple = config => {
     - deltaTime - new each frame
     - loop - outer function called each rAF frame, recreated on unpause
   */
-  const rAFID = Symbol('rAFID')
-  const startTime = Symbol('startTime')
-  const timeSum = Symbol('timeSum')
-  const lastUnpause = Symbol('lastUnpause')
-  const progress = Symbol('progress')
-  const deltaTime = Symbol('deltaTime')
-  const loop = Symbol('loop')
-  looper[rAFID] = null
-  looper[startTime] = null
-  looper[timeSum] = null
-  looper[lastUnpause] = null
-  looper[progress] = null
-  looper[deltaTime] = null
-  looper[loop] = null
+  looper.rAFID = null
+  looper.startTime = null
+  looper.timeSum = null
+  looper.lastUnpause = null
+  looper.progress = null
+  looper.deltaTime = null
+  looper.loop = null
   looper.start = startFactory(config, looper)
   looper.pause = pauseFactory(looper)
   looper.unpause = unpauseFactory(config, looper)

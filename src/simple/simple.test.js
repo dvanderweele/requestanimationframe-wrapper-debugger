@@ -35,41 +35,23 @@ test('expect "simple" to throw errors on invalid inputs', () => {
       limit: 2000
     })
   }).not.toThrow()
-  expect(() => {
-    simple({
-      loopFunction: () => {},
-      position: 2000
-    })
-  }).toThrow(TypeError)
-  expect(() => {
-    simple({
-      loopFunction: () => {},
-      position: 'fubar'
-    })
-  }).toThrow(Error)
-  expect(() => {
-    simple({
-      loopFunction: () => {},
-      position: 'first'
-    })
-    simple({
-      loopFunction: () => {},
-      position: 'last'
-    })
-  }).not.toThrow()
 })
 
-test('returned looper object has 7 null Symbol properties', () => {
+test('returned looper object has 7 null properties and 4 functions and 1 prototype', () => {
   const looper = simple({
-    loopFunction: () => {},
-    position: 'first'
+    loopFunction: () => {}
   })
-  expect(Object.getOwnPropertySymbols(looper).length).toBe(7)
-  expect(looper[Object.getOwnPropertySymbols(looper)[0]]).toBe(null)
-  expect(looper[Object.getOwnPropertySymbols(looper)[1]]).toBe(null)
-  expect(looper[Object.getOwnPropertySymbols(looper)[2]]).toBe(null)
-  expect(looper[Object.getOwnPropertySymbols(looper)[3]]).toBe(null)
-  expect(looper[Object.getOwnPropertySymbols(looper)[4]]).toBe(null)
-  expect(looper[Object.getOwnPropertySymbols(looper)[5]]).toBe(null)
-  expect(looper[Object.getOwnPropertySymbols(looper)[6]]).toBe(null)
+  expect(Object.keys(looper).length).toBe(12)
+  expect(looper.rAFID).toBe(null)
+  expect(looper.startTime).toBe(null)
+  expect(looper.timeSum).toBe(null)
+  expect(looper.lastUnpause).toBe(null)
+  expect(looper.progress).toBe(null)
+  expect(looper.deltaTime).toBe(null)
+  expect(looper.loop).toBe(null)
+  expect(typeof looper.start).toBe('function')
+  expect(typeof looper.stop).toBe('function')
+  expect(typeof looper.pause).toBe('function')
+  expect(typeof looper.unpause).toBe('function')
+  expect(typeof looper.prototype).toBe('object')
 })

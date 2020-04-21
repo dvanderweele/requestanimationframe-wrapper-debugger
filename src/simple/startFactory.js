@@ -1,108 +1,61 @@
 const startFactory = (config, looper) => {
   /*
-    SYMBOLS LEGEND for looper object
+    Looper Metadata
 
-    0 - rAF ID - will get refreshed when paused and unpaused
-    1 - startTime - original starting timestamp, never refreshed
-    2 - timeSum - sum of all progresses calculated on every pause
-    3 - lastUnpause - timestamp from loop at last unpause
-    4 - progress - time between start or lastUnpause and current frame
-    5 - deltaTime - new each frame
-    6 - loop - outer function called each rAF frame, recreated on unpause
+    - rAFID - will get refreshed when paused and unpaused
+    - startTime - original starting timestamp, never refreshed
+    - timeSum - sum of all progresses calculated on every pause
+    - lastUnpause - timestamp from loop at last unpause
+    - progress - time between start or lastUnpause and current frame
+    - deltaTime - new each frame
+    - loop - outer function called each rAF frame, recreated on unpause
   */
-  const syms = Object.getOwnPropertySymbols(looper)
   const callback = () => {
-    this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
+    looper.rAFID = window.requestAnimationFrame(looper.loop)
   }
-  callback.bind(looper)
   let func
   if (config.limit) {
     // user defined limit
-    if (config.position === 'first') {
-      func = () => {
-        this[syms[2]] = 0
-        this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
-          }
-          this[syms[4]] = timestamp - this[syms[3]]
-          if (this[syms[2]] + this[syms[4]] < config.limit) {
-            this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
-          } else {
-            window.cancelAnimationFrame(this[syms[0]])
-          }
-          config.loopFunction()
+    let lastFrame = performance.now()
+    func = () => {
+      looper.timeSum = 0
+      looper.loop = timestamp => {
+        if (!looper.startTime) {
+          looper.startTime = timestamp
+          looper.lastUnpause = looper.startTime
         }
-        this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
-          callback
-        )
-      }
-    } else {
-      func = () => {
-        this[syms[2]] = 0
-        this[syms[3]] = this[syms[1]]
-        this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
-          }
-          this[syms[4]] = timestamp - this[syms[3]]
-          config.loopFunction()
-          if (this[syms[2]] + this[syms[4]] < config.limit) {
-            this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
-          } else {
-            window.cancelAnimationFrame(this[syms[0]])
-          }
+        looper.progress = timestamp - looper.lastUnpause
+        looper.deltaTime = timestamp - lastFrame
+        if (looper.timeSum + looper.progress < config.limit) {
+          looper.rAFID = window.requestAnimationFrame(looper.loop)
+        } else {
+          window.cancelAnimationFrame(looper.rAFID)
         }
-        this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
-          callback
-        )
+        config.loopFunction(looper.deltaTime)
+        lastFrame = performance.now()
       }
+      looper.prototype.dispatch('start', callback)
     }
   } else {
     // no user defined limit
-    if (config.position === 'first') {
-      func = () => {
-        this[syms[2]] = 0
-        this[syms[3]] = this[syms[1]]
-        this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
-          }
-          this[syms[4]] = timestamp - this[syms[3]]
-          this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
-          config.loopFunction()
+    let lastFrame = performance.now()
+    func = () => {
+      looper.timeSum = 0
+      looper.lastUnpause = looper.startTime
+      looper.loop = timestamp => {
+        if (!looper.startTime) {
+          looper.startTime = timestamp
+          looper.lastUnpause = looper.startTime
         }
-        this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
-          callback
-        )
+        looper.progress = timestamp - looper.lastUnpause
+        looper.deltaTime = timestamp - lastFrame
+        looper.rAFID = window.requestAnimationFrame(looper.loop)
+        config.loopFunction(looper.deltaTime)
+        lastFrame = performance.now()
       }
-    } else {
-      func = () => {
-        this[syms[2]] = 0
-        this[syms[3]] = this[syms[1]]
-        this[syms[6]] = timestamp => {
-          if (!this[syms[1]]) {
-            this[syms[1]] = timestamp
-            this[syms[3]] = this[syms[1]]
-          }
-          this[syms[4]] = timestamp - this[syms[3]]
-          config.loopFunction()
-          this[syms[0]] = window.requestAnimationFrame(this[syms[6]])
-        }
-        this.prototype[Object.getOwnPropertySymbols(this.prototype)[3]](
-          'start',
-          callback
-        )
-      }
+      looper.prototype.dispatch('start', callback)
     }
   }
-  func.bind(looper)
   return func
 }
 

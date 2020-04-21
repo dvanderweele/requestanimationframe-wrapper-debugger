@@ -1,0 +1,19 @@
+{
+  "name": "simple_demo",
+  "version": "1.0.0",
+  "description": "A demo of requestanimationframe-wrapper-debugger's simple api, using parcel.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Dave VanderWeele",
+  "license": "MIT",
+  "dependencies": {
+    "requestanimationframe-wrapper-debugger": "file:../../.."
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0"
+  }
+}
