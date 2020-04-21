@@ -16,44 +16,132 @@ const startFactory = (config, looper) => {
   let func
   if (config.limit) {
     // user defined limit
-    let lastFrame = performance.now()
-    func = () => {
-      looper.timeSum = 0
-      looper.loop = timestamp => {
-        if (!looper.startTime) {
-          looper.startTime = timestamp
-          looper.lastUnpause = looper.startTime
+    if (config.scaleDelta && typeof config.scaleDelta === 'number') {
+      let lastFrame = performance.now()
+      let deltaTime
+      func = () => {
+        looper.timeSum = 0
+        looper.loop = timestamp => {
+          if (!looper.startTime) {
+            looper.startTime = timestamp
+            looper.lastUnpause = looper.startTime
+          }
+          looper.progress = timestamp - looper.lastUnpause
+          deltaTime = (timestamp - lastFrame) / config.scaleDelta
+          if (looper.timeSum + looper.progress < config.limit) {
+            looper.rAFID = window.requestAnimationFrame(looper.loop)
+          } else {
+            window.cancelAnimationFrame(looper.rAFID)
+          }
+          config.loopFunction(deltaTime)
+          lastFrame = performance.now()
         }
-        looper.progress = timestamp - looper.lastUnpause
-        looper.deltaTime = timestamp - lastFrame
-        if (looper.timeSum + looper.progress < config.limit) {
-          looper.rAFID = window.requestAnimationFrame(looper.loop)
-        } else {
-          window.cancelAnimationFrame(looper.rAFID)
-        }
-        config.loopFunction(looper.deltaTime)
-        lastFrame = performance.now()
+        looper.prototype.dispatch('start', callback)
       }
-      looper.prototype.dispatch('start', callback)
+    } else if (config.scaleDelta && typeof config.scaleDelta === 'function') {
+      let lastFrame = performance.now()
+      let deltaTime
+      func = () => {
+        looper.timeSum = 0
+        looper.loop = timestamp => {
+          if (!looper.startTime) {
+            looper.startTime = timestamp
+            looper.lastUnpause = looper.startTime
+          }
+          looper.progress = timestamp - looper.lastUnpause
+          deltaTime = config.scaleDelta(timestamp - lastFrame)
+          if (looper.timeSum + looper.progress < config.limit) {
+            looper.rAFID = window.requestAnimationFrame(looper.loop)
+          } else {
+            window.cancelAnimationFrame(looper.rAFID)
+          }
+          config.loopFunction(deltaTime)
+          lastFrame = performance.now()
+        }
+        looper.prototype.dispatch('start', callback)
+      }
+    } else {
+      let lastFrame = performance.now()
+      let deltaTime
+      func = () => {
+        looper.timeSum = 0
+        looper.loop = timestamp => {
+          if (!looper.startTime) {
+            looper.startTime = timestamp
+            looper.lastUnpause = looper.startTime
+          }
+          looper.progress = timestamp - looper.lastUnpause
+          deltaTime = timestamp - lastFrame
+          if (looper.timeSum + looper.progress < config.limit) {
+            looper.rAFID = window.requestAnimationFrame(looper.loop)
+          } else {
+            window.cancelAnimationFrame(looper.rAFID)
+          }
+          config.loopFunction(deltaTime)
+          lastFrame = performance.now()
+        }
+        looper.prototype.dispatch('start', callback)
+      }
     }
   } else {
     // no user defined limit
-    let lastFrame = performance.now()
-    func = () => {
-      looper.timeSum = 0
-      looper.lastUnpause = looper.startTime
-      looper.loop = timestamp => {
-        if (!looper.startTime) {
-          looper.startTime = timestamp
-          looper.lastUnpause = looper.startTime
+    if (config.scaleDelta && typeof config.scaleDelta === 'number') {
+      let lastFrame = performance.now()
+      let deltaTime
+      func = () => {
+        looper.timeSum = 0
+        looper.lastUnpause = looper.startTime
+        looper.loop = timestamp => {
+          if (!looper.startTime) {
+            looper.startTime = timestamp
+            looper.lastUnpause = looper.startTime
+          }
+          looper.progress = timestamp - looper.lastUnpause
+          deltaTime = (timestamp - lastFrame) / config.scaleDelta
+          looper.rAFID = window.requestAnimationFrame(looper.loop)
+          config.loopFunction(deltaTime)
+          lastFrame = performance.now()
         }
-        looper.progress = timestamp - looper.lastUnpause
-        looper.deltaTime = timestamp - lastFrame
-        looper.rAFID = window.requestAnimationFrame(looper.loop)
-        config.loopFunction(looper.deltaTime)
-        lastFrame = performance.now()
+        looper.prototype.dispatch('start', callback)
       }
-      looper.prototype.dispatch('start', callback)
+    } else if (config.scaleDelta && typeof config.scaleDelta === 'function') {
+      let lastFrame = performance.now()
+      let deltaTime
+      func = () => {
+        looper.timeSum = 0
+        looper.lastUnpause = looper.startTime
+        looper.loop = timestamp => {
+          if (!looper.startTime) {
+            looper.startTime = timestamp
+            looper.lastUnpause = looper.startTime
+          }
+          looper.progress = timestamp - looper.lastUnpause
+          deltaTime = config.scaleDelta(timestamp - lastFrame)
+          looper.rAFID = window.requestAnimationFrame(looper.loop)
+          config.loopFunction(deltaTime)
+          lastFrame = performance.now()
+        }
+        looper.prototype.dispatch('start', callback)
+      }
+    } else {
+      let lastFrame = performance.now()
+      let deltaTime
+      func = () => {
+        looper.timeSum = 0
+        looper.lastUnpause = looper.startTime
+        looper.loop = timestamp => {
+          if (!looper.startTime) {
+            looper.startTime = timestamp
+            looper.lastUnpause = looper.startTime
+          }
+          looper.progress = timestamp - looper.lastUnpause
+          deltaTime = timestamp - lastFrame
+          looper.rAFID = window.requestAnimationFrame(looper.loop)
+          config.loopFunction(deltaTime)
+          lastFrame = performance.now()
+        }
+        looper.prototype.dispatch('start', callback)
+      }
     }
   }
   return func

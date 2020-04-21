@@ -55,13 +55,12 @@ test('returned looper object has 7 null properties and 4 functions and 1 prototy
   const looper = simple({
     loopFunction: () => {}
   })
-  expect(Object.keys(looper).length).toBe(12)
+  expect(Object.keys(looper).length).toBe(11)
   expect(looper.rAFID).toBe(null)
   expect(looper.startTime).toBe(null)
   expect(looper.timeSum).toBe(null)
   expect(looper.lastUnpause).toBe(null)
   expect(looper.progress).toBe(null)
-  expect(looper.deltaTime).toBe(null)
   expect(looper.loop).toBe(null)
   expect(typeof looper.start).toBe('function')
   expect(typeof looper.stop).toBe('function')

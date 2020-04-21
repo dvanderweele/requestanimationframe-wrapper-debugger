@@ -59,7 +59,6 @@ const simple = config => {
   looper.timeSum = null
   looper.lastUnpause = null
   looper.progress = null
-  looper.deltaTime = null
   looper.loop = null
   looper.start = startFactory(config, looper)
   looper.pause = pauseFactory(looper)
